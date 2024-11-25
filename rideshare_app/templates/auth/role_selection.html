@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Choose Role - RideShare{% endblock %}
+
+{% block content %}
+<script>// Example AJAX call to get AI help
+    async function getAIHelp(question) {
+        try {
+            const response = await fetch('/ai-help', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: question })
+            });
+            const data = await response.json();
+            return data.response;
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }</script>
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+.auth-container, .role-selection-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.auth-container h2, .role-selection-container h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.auth-form .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.auth-form label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.auth-form input, .auth-form select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus, .auth-form select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.auth-form button:hover {
+    background-color: #0056b3;
+}
+
+.auth-container p, .role-selection-container p {
+    margin-top: 10px;
+    color: #555;
+}
+
+.auth-container a, .role-selection-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.role-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.role-button {
+    display: block;
+    text-align: center;
+    padding: 10px 0;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.role-button:hover {
+    background-color: #007bff;
+    color: #fff;
+}</style>
+<div class="role-selection-container">
+    <h2>Choose Your Role</h2>
+    <div class="role-buttons">
+        <a href="{{ url_for('auth.login', role='rider') }}" class="role-button">
+            Rider Login
+        </a>
+        <a href="{{ url_for('auth.login', role='driver') }}" class="role-button">
+            Driver Login
+        </a>
+        <a href="{{ url_for('auth.login', role='manager') }}" class="role-button">
+            Manager Login
+        </a>
+        <a href="{{ url_for('auth.ai_assistance') }}" class="role-button">
+            AI Assistance
+        </a>
+        
+    </div>
+   
+
+    <p>New user? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+</div>
+{% endblock %}

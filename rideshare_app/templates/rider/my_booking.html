@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<style>/* Container for Bookings Page */
+    .bookings-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #f7fafc;
+    }
+    
+    /* Header for the page */
+    h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 2rem;
+    }
+    
+    /* No bookings message */
+    .no-bookings {
+        font-size: 1.125rem;
+        color: #4a5568;
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    /* Booking Cards Layout */
+    .bookings-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    /* Single Booking Card */
+    .booking-card {
+        background-color: #fff;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    /* Hover effect on booking cards */
+    .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Booking Info Text */
+    .booking-info h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+    
+    .booking-info p {
+        font-size: 1rem;
+        color: #4a5568;
+        margin-top: 0.5rem;
+    }
+    
+    /* Status Indicator */
+    .status-pending {
+        color: #f6ad55;
+        font-weight: bold;
+    }
+    
+    .status-confirmed {
+        color: #38a169;
+        font-weight: bold;
+    }
+    
+    .status-cancelled {
+        color: #e53e3e;
+        font-weight: bold;
+    }
+    
+    /* Navigation Button */
+    .navigation-links {
+        margin-top: 2rem;
+        text-align: center;
+    }
+    
+    .navigation-links .button {
+        background-color: #3182ce;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* Button Hover Effect */
+    .navigation-links .button:hover {
+        background-color: #2b6cb0;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .bookings-list {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .bookings-container {
+            padding: 1rem;
+        }
+    
+        .bookings-list {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+<div class="bookings-container">
+    <h2>My Bookings</h2>
+    
+    {% if bookings %}
+    <div class="bookings-list">
+        {% for booking in bookings %}
+        <div class="booking-card">
+            <div class="booking-info">
+                <h3>Booking #{{ booking.booking_id }}</h3>
+                <p>Driver: {{ booking.driver_name }}</p>
+                <p>Zone: {{ booking.zone_name }}</p>
+                <p>Status: <span class="status-{{ booking.status }}">{{ booking.status }}</span></p>
+                <p>Booked on: {{ booking.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="no-bookings">You haven't made any bookings yet.</p>
+    {% endif %}
+    
+    <div class="navigation-links">
+        <a href="{{ url_for('rider.dashboard') }}" class="button">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

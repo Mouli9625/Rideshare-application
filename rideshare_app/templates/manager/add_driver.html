@@ -1,0 +1,203 @@
+{# templates/manager/add_driver.html #}
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Global Reset Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Container Styles */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Styles */
+h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #374151;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: #3182ce;
+    outline: none;
+    box-shadow: 0 0 0 1px #3182ce;
+}
+
+button {
+    background-color: #3182ce;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2c5282;
+}
+
+a {
+    color: #3182ce;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #2c5282;
+}
+
+/* Flash Message Styles */
+.flash-message {
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.flash-message.error {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+.flash-message.success {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">Add New Driver</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-md {% if category == 'error' %}bg-red-50 text-red-800{% else %}bg-green-50 text-green-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('manager.add_driver') }}" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="mb-4">
+                    <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+
+                <div class="mb-4">
+                    <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" id="email" name="email" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" id="phone_number" name="phone_number" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="license_number" class="block text-sm font-medium text-gray-700">License Number</label>
+                <input type="text" id="license_number" name="license_number" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="vehicle_number" class="block text-sm font-medium text-gray-700">Vehicle Number</label>
+                <input type="text" id="vehicle_number" name="vehicle_number" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            </div>
+
+            <div class="mb-4">
+                <label for="vehicle_type" class="block text-sm font-medium text-gray-700">Vehicle Type</label>
+                <select id="vehicle_type" name="vehicle_type" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <option value="">Select Type</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Hatchback">Hatchback</option>
+                    <option value="Van">Van</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label for="zone_name" class="block text-sm font-medium text-gray-700">Zone</label>
+                <select id="zone_name" name="zone_name" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    <option value="">Select Zone</option>
+                    {% if zones %}
+                        {% for zone in zones %}
+                            <option value="{{ zone.name }}">{{ zone.name }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+
+            <div class="flex items-center justify-between mt-6">
+                <button type="submit"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Add Driver
+                </button>
+                <a href="{{ url_for('manager.drivers') }}"
+                   class="text-blue-500 hover:text-blue-800">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

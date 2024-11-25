@@ -1,0 +1,167 @@
+{# templates/manager/rider_address.html #}
+{% extends "base.html" %}
+{% block content %}
+<style>/* Container Styling */
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f9fafb, #ffffff);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.06);
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    
+    .container:hover {
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.07);
+        transform: translateY(-3px);
+    }
+    
+    /* Form Styling */
+    form {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    form:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Heading Styling */
+    h1 {
+        font-size: 2.2rem;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+    }
+    
+    /* Label Styling */
+    form label {
+        color: #4a5568;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    /* Select Field Styling */
+    form select {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid #cbd5e0;
+        background-color: #f9fafb;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        appearance: none;
+        background-image: url('data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAAD9MdUeAAAACXBIWXMAAAsSAAALEgHS3X78AAAAXElEQVQoz2NgGAXUBhNwkKAwiIMRxA4wKIpsAKgoh6JkCA1hdCAgVGmACj0KlFBFJgaEQkhZNYkOkok5KoepA1DBU0+ZCj8g4jNAJhjMBrCcgBya7TwpMDwAADfFBFXRpdF4AAAAASUVORK5CYII=');
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1rem;
+    }
+    
+    form select:focus {
+        border-color: #3182ce;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.25);
+        outline: none;
+        background-color: #ffffff;
+    }
+    
+    /* Button Styling */
+    button[type="submit"] {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #4299e1, #2b6cb0);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    button[type="submit"]:hover {
+        background: linear-gradient(135deg, #2b6cb0, #3182ce);
+        transform: translateY(-2px);
+    }
+    
+    button[type="submit"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+    
+    /* Enhanced Button Hover Effect */
+    button[type="submit"]:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Additional Styling for Placeholder Text */
+    form select option {
+        color: #4a5568;
+    }
+    
+    /* Small text color */
+    form p {
+        color: #718096;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        text-align: center;
+    }
+    </style>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Rider Address Lookup</h1>
+    
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="mb-6">
+            <a href="{{ url_for('manager.add_rider_address') }}" 
+               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Add New Rider Address
+            </a>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Rider Email</label>
+                <input type="email" name="email" id="email" 
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                       placeholder="Enter rider's email"
+                       required>
+            </div>
+            
+            <button type="submit" 
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Look Up Address
+            </button>
+        </form>
+        
+        {% if rider_address %}
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h2 class="text-xl font-semibold mb-4">Address Details</h2>
+            <div class="space-y-2">
+                <p><span class="font-medium">Email:</span> {{ rider_address.email }}</p>
+                <p><span class="font-medium">Street Address:</span> {{ rider_address.street_address }}</p>
+                <p><span class="font-medium">City:</span> {{ rider_address.city }}</p>
+                <p><span class="font-medium">State:</span> {{ rider_address.state }}</p>
+                <p><span class="font-medium">Postal Code:</span> {{ rider_address.postal_code }}</p>
+                <p><span class="font-medium">Country:</span> {{ rider_address.country }}</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mt-4 p-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistance - RideShare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .auth-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-area {
+            margin-bottom: 20px;
+        }
+
+        .input-area textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .input-area textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .ai-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .ai-button:hover {
+            background-color: #0056b3;
+        }
+
+        .response-area {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .response-area h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .response-content {
+            white-space: pre-wrap;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .loading {
+            display: none;
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .navigation {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .navigation a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .navigation a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>AI Assistance</h2>
+        <div class="input-area">
+            <textarea 
+                id="question-input" 
+                placeholder="How can I help you today? Ask me anything about registration, roles, or general assistance..."
+            ></textarea>
+            <button class="ai-button" id="submit-button">Get AI Help</button>
+        </div>
+        <div id="loading" class="loading">
+            Processing your request...
+        </div>
+        <div id="error-message" class="error-message">
+            An error occurred. Please try again.
+        </div>
+        <div class="response-area">
+            <h3>AI Response:</h3>
+            <div id="response-display" class="response-content">
+                Your response will appear here...
+            </div>
+        </div>
+        <div class="navigation">
+            <a href="role-selection">← Back to Role Selection</a>
+        </div>
+    </div>
+
+    <script>
+        async function query(data) {
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            
+            try {
+                loading.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                const response = await fetch(
+                    "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-v0.1",
+                    {
+                        headers: {
+                            "Authorization": "Bearer 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",
+                            "Content-Type": "application/json",
+                        },
+                        method: "POST",
+                        body: JSON.stringify(data),
+                    }
+                );
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Error: ' + error.message;
+                throw error;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        document.getElementById("submit-button").addEventListener("click", async () => {
+            const questionInput = document.getElementById("question-input").value;
+            const responseDisplay = document.getElementById("response-display");
+            
+            if (!questionInput.trim()) {
+                responseDisplay.textContent = "Please enter a question.";
+                return;
+            }
+
+            try {
+                const response = await query({ inputs: questionInput });
+                responseDisplay.textContent = Array.isArray(response) ? 
+                    response[0].generated_text : 
+                    JSON.stringify(response, null, 2);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Add keyboard shortcut (Enter + Ctrl/Cmd) to submit
+        document.getElementById("question-input").addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                document.getElementById("submit-button").click();
+            }
+        });
+    </script>
+</body>
+</html>

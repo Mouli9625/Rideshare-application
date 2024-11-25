@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RideShare App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+    <style>/* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        /* Body styles */
+        body {
+            background-color: #f4f7fa;
+            color: #333;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Flash messages */
+        .flash-messages {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        /* Flash message item */
+        .flash-message {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        /* Success message */
+        .flash-message.success {
+            background-color: #38a169; /* Green for success */
+        }
+        
+        /* Error message */
+        .flash-message.error {
+            background-color: #e53e3e; /* Red for errors */
+        }
+        
+        /* Info message */
+        .flash-message.info {
+            background-color: #3182ce; /* Blue for info */
+        }
+        
+        /* Fade-in animation for flash messages */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Content area styles */
+        .content {
+            margin-top: 1.5rem;
+        }
+        
+        /* Ensure links in the content area look nice */
+        a {
+            color: #3182ce;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        a:hover {
+            color: #2b6cb0;
+        }
+        
+        /* Add some basic styling to buttons for consistency */
+        button, .button {
+            padding: 0.75rem 1.25rem;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover, .button:hover {
+            background-color: #2b6cb0;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+        
+            .flash-messages {
+                width: 100%;
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
+        }
+        </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

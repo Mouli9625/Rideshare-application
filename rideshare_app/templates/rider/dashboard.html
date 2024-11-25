@@ -1,0 +1,726 @@
+{% extends "base.html" %}
+{% block content %}
+<style>/* General Layout */
+    body {
+        background-color: #f7fafc; /* Light gray background */
+        font-family: 'Arial', sans-serif;
+    }
+    
+    /* Container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+    
+    /* Headings */
+    h1, h2, h3 {
+        font-family: 'Roboto', sans-serif;
+        color: #2d3748;
+    }
+    
+    /* Title */
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+    }
+    
+    /* Subheadings */
+    h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Status, Fare, etc */
+    .text-lg {
+        font-size: 1.125rem;
+        color: #4a5568;
+    }
+    
+    /* Active Ride Card */
+    .bg-white {
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+        padding: 2rem;
+    }
+    
+    /* Add rounded borders to each section */
+    .rounded-lg {
+        border-radius: 0.75rem;
+    }
+    
+    .shadow-md {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    
+    /* Card Styling */
+    .mb-8 {
+        margin-bottom: 2rem;
+    }
+    
+    /* Space Between Items */
+    .space-y-4 {
+        margin-bottom: 1rem;
+    }
+    
+    /* Text for labels */
+    .font-medium {
+        font-weight: 500;
+    }
+    
+    /* Button Styles */
+    button {
+        display: inline-block;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: center;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* Primary button */
+    .bg-blue-500 {
+        background-color: #3182ce;
+        color: white;
+    }
+    
+    .bg-blue-500:hover {
+        background-color: #2b6cb0;
+    }
+    
+    /* Secondary Button (Inactive/Disabled) */
+    .bg-gray-500 {
+        background-color: #6b7280;
+        color: white;
+    }
+    
+    .bg-gray-500:hover {
+        background-color: #4b5563;
+    }
+    
+    /* Available seats section */
+    .text-green-600 {
+        color: #38a169;
+    }
+    
+    .text-red-600 {
+        color: #e53e3e;
+    }
+    
+    /* Form input and select dropdown */
+    .form-select {
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid #e2e8f0;
+        width: 100%;
+        background-color: #fff;
+        transition: border 0.3s ease;
+    }
+    
+    .form-select:focus {
+        border-color: #3182ce;
+        outline: none;
+    }
+    
+    /* Grid Layouts */
+    .grid {
+        display: grid;
+        gap: 2rem;
+    }
+    
+    .grid-cols-1 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Flex Layouts */
+    .flex {
+        display: flex;
+    }
+    
+    .items-center {
+        align-items: center;
+    }
+    
+    .justify-between {
+        justify-content: space-between;
+    }
+    
+    .space-x-4 {
+        gap: 1rem;
+    }
+    
+    /* Card for driver info */
+    .bg-gray-50 {
+        background-color: #f7fafc;
+    }
+    
+    .p-6 {
+        padding: 1.5rem;
+    }
+    
+    .text-sm {
+        font-size: 0.875rem;
+    }
+    
+    .text-gray-500 {
+        color: #6b7280;
+    }
+    
+    .text-gray-600 {
+        color: #4a5568;
+    }
+    
+    .text-gray-700 {
+        color: #2d3748;
+    }
+    
+    .text-gray-800 {
+        color: #1a202c;
+    }
+    
+    /* Notifications */
+    #rideStatusNotification {
+        display: none;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 0.5rem;
+        background-color: #edf2f7;
+        color: #2b6cb0;
+    }
+    
+    /* Green for Accepted */
+    #rideStatusNotification.green {
+        background-color: #f0fff4;
+        border: 1px solid #68d391;
+        color: #2f855a;
+    }
+    
+    /* Red for Rejected */
+    #rideStatusNotification.red {
+        background-color: #fff5f5;
+        border: 1px solid #f56565;
+        color: #e53e3e;
+    }
+    
+    /* Hover Effect for Buttons */
+    button:hover {
+        background-color: #2b6cb0;
+    }
+    
+    /* Padding and Margin for Cards */
+    .p-4 {
+        padding: 1rem;
+    }
+    
+    .mb-4 {
+        margin-bottom: 1rem;
+    }
+    
+    .mt-4 {
+        margin-top: 1rem;
+    }
+    
+    /* Text Placeholder Styling */
+    input::placeholder, textarea::placeholder {
+        color: #a0aec0;
+    }
+    
+    /* Rating stars */
+    .star-rating {
+        font-size: 1.25rem;
+        color: #f6ad55;
+    }
+    
+    /* Completed Ride Section */
+    .completed-rides {
+        margin-top: 2rem;
+    }
+    
+    .completed-rides .p-6 {
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .completed-rides .feedback {
+        background-color: #edf2f7;
+        padding: 1.5rem;
+        border-radius: 0.375rem;
+        margin-top: 1rem;
+    }
+    
+    .completed-rides .feedback p {
+        font-size: 1rem;
+    }
+    
+    .completed-rides .submitted-feedback {
+        background-color: #e6fffa;
+        border-radius: 0.375rem;
+        padding: 1rem;
+    }
+    
+    /* Footer & Other small elements */
+    .text-xs {
+        font-size: 0.75rem;
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+    
+    .text-right {
+        text-align: right;
+    }
+    .ai{
+        color: #0b0b0b;
+        text-decoration: none;
+        font-weight: bold;
+
+    }
+    </style>
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Rider Dashboard</h1>
+    
+    <a href="{{ url_for('auth.ai_assistance') }}" class="ai">
+        AI Assistance
+    </a>
+
+    
+
+    {% if active_ride %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Current Ride Status</h2>
+        <div class="space-y-4">
+            <p><span class="font-medium">Status:</span> {{ active_ride.status|title }}</p>
+            {# Safe fare display with fallback #}
+        <p><span class="font-medium">Current Fare:</span> ₹{{ active_ride.get_formatted_fare() }}</p>
+            <p><span class="font-medium">Total Riders:</span> 
+                {{ ride_utils.get_total_riders(active_ride.ride_group_id) }}/4
+            </p>
+            {% if active_ride.driver %}
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-lg mb-2">Driver Information</h3>
+                <p><span class="font-medium">Driver:</span> {{ active_ride.driver.first_name }} {{ active_ride.driver.last_name }}</p>
+                <p><span class="font-medium">Vehicle:</span> {{ active_ride.driver.vehicle_number }}</p>
+                <p><span class="font-medium">Phone:</span> {{ active_ride.driver.phone_number }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% if not active_ride %}
+        {% if recommended_driver %}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Recommended Driver</h2>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold">{{ recommended_driver.get_full_name() }}</h3>
+                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">{{ recommended_driver.vehicle_type }}</span>
+                </div>
+                
+                <div class="space-y-2 text-gray-600">
+                    <p><span class="font-medium">Vehicle:</span> {{ recommended_driver.vehicle_number }}</p>
+                    <p><span class="font-medium">Rating:</span> 
+                        {% if recommended_driver.rating %}
+                            {{ "%.1f"|format(recommended_driver.rating) }} ⭐
+                        {% else %}
+                            No rating
+                        {% endif %}
+                    </p>
+                    
+                    {% set is_available, current_riders = ride_utils.get_driver_availability(recommended_driver.id) %}
+                    {% set available_seats = 4 - current_riders %}
+                    
+                    <p><span class="font-medium">Available Seats:</span> 
+                        {{ available_seats }}/4
+                        {% if available_seats > 0 %}
+                            <span class="text-green-600">(Available)</span>
+                        {% else %}
+                            <span class="text-red-600">(Full)</span>
+                        {% endif %}
+                    </p>
+                    
+                    <p><span class="font-medium">Estimated Fare:</span> 
+                        ₹{{ "%.2f"|format(400 / (5 - available_seats)) }}
+                        <span class="text-sm text-gray-500">(split between {{ 5 - available_seats }} riders)</span>
+                    </p>
+                </div>
+
+                {% if available_seats > 0 %}
+                <form action="{{ url_for('rider.request_ride', driver_id=recommended_driver.id) }}" method="post" class="mt-4">
+                    <button type="submit" class="w-full bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition-colors">
+                        Request Ride with Recommended Driver
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if recommendation_reason %}
+                <p class="mt-4 text-sm text-gray-600">{{ recommendation_reason }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if other_drivers %}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Other Available Drivers</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for driver in other_drivers %}
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-semibold">{{ driver.get_full_name() }}</h3>
+                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">{{ driver.vehicle_type }}</span>
+                    </div>
+                    
+                    <div class="space-y-2 text-gray-600">
+                        <p><span class="font-medium">Vehicle:</span> {{ driver.vehicle_number }}</p>
+                        <p><span class="font-medium">Rating:</span> 
+                            {% if driver.rating %}
+                                {{ "%.1f"|format(driver.rating) }} ⭐
+                            {% else %}
+                                No rating
+                            {% endif %}
+                        </p>
+                        
+                        {% set is_available, current_riders = ride_utils.get_driver_availability(driver.id) %}
+                        {% set available_seats = 4 - current_riders %}
+                        
+                        <p><span class="font-medium">Available Seats:</span> 
+                            {{ available_seats }}/4
+                            {% if available_seats > 0 %}
+                                <span class="text-green-600">(Available)</span>
+                            {% else %}
+                                <span class="text-red-600">(Full)</span>
+                            {% endif %}
+                        </p>
+                        
+                        <p><span class="font-medium">Estimated Fare:</span> 
+                            ₹{{ "%.2f"|format(400 / (5 - available_seats)) }}
+                            <span class="text-sm text-gray-500">(split between {{ 5 - available_seats }} riders)</span>
+                        </p>
+                    </div>
+
+                    {% if available_seats > 0 %}
+                    <form action="{{ url_for('rider.request_ride', driver_id=driver.id) }}" method="post" class="mt-4">
+                        <button type="submit" class="w-full bg-gray-500 text-white rounded-lg px-4 py-2 hover:bg-gray-600 transition-colors">
+                            Request Ride
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+
+
+            <!-- Driver Information - Show for Requested and Accepted status -->
+            {% if active_ride.status in ['requested', 'accepted'] and active_ride.driver %}
+            <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                <h3 class="font-semibold text-lg mb-2">Driver Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <span class="font-medium">Driver:</span>
+                        <span class="ml-2">{{ active_ride.driver.first_name }} {{ active_ride.driver.last_name }}</span>
+                    </div>
+                    <div>
+                        <span class="font-medium">Phone:</span>
+                        <span class="ml-2">{{ active_ride.driver.phone_number }}</span>
+                    </div>
+                    {% if active_ride.driver.vehicle_number %}
+                    <div>
+                        <span class="font-medium">Vehicle:</span>
+                        <span class="ml-2">{{ active_ride.driver.vehicle_number }}</span>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <span class="font-medium">Pickup Zone:</span>
+                        <span class="ml-2">{{ active_ride.pickup_zone.name }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Rejected Status Message -->
+            {% if active_ride.status == 'rejected' %}
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p class="text-red-700 mb-3">Your ride request was rejected. Please try requesting a new ride.</p>
+                <a href="{{ url_for('rider.dashboard') }}" 
+                   class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    Request New Ride
+                </a>
+            </div>
+            {% endif %}
+
+            {% if active_ride.created_at %}
+            <!-- Timestamp -->
+            <div class="text-sm text-gray-500">
+                Requested at: {{ active_ride.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons Based on Status -->
+            {% if active_ride.status == 'accepted' %}
+            <div class="mt-4">
+                <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600" 
+                        onclick="trackRide()">
+                    Track Ride
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+
+
+    <div class="w-full md:w-1/2">
+        <h2 class="text-xl font-bold mb-4">Select Zone</h2>
+        <div class="flex gap-4">
+            <form method="get" action="{{ url_for('rider.dashboard') }}" class="w-full">
+                <select name="zone_id" class="form-select w-full mb-4" onchange="this.form.submit()">
+                    <option value="">Select a zone</option>
+                    {% for zone in zones %}
+                    <option value="{{ zone.id }}" {% if selected_zone and selected_zone.id == zone.id %}selected{% endif %}>
+                        {{ zone.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+
+    {% if selected_zone %}
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">Available Drivers in {{ selected_zone.name }}</h2>
+        
+        {% if drivers %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- In rider/dashboard.html -->
+{% for driver in drivers %}
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold">{{ driver.get_full_name() }}</h3>
+        <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">
+            {{ driver.vehicle_type }}
+        </span>
+    </div>
+
+    <div class="space-y-2 text-gray-600">
+        <p><span class="font-medium">Vehicle:</span> {{ driver.vehicle_number }}</p>
+        <p><span class="font-medium">Rating:</span> 
+            {% if driver.rating %}
+                {{ "%.1f"|format(driver.rating) }} ⭐
+            {% else %}
+                No rating
+            {% endif %}
+        </p>
+        
+        {% set is_available, current_riders = ride_utils.get_driver_availability(driver.id) %}
+        {% set available_seats = 4 - current_riders %}
+        
+        <p><span class="font-medium">Available Seats:</span> 
+            {{ available_seats }}/4
+            {% if available_seats > 0 %}
+                <span class="text-green-600">(Available)</span>
+            {% else %}
+                <span class="text-red-600">(Full)</span>
+            {% endif %}
+        </p>
+
+        <p><span class="font-medium">Estimated Fare:</span> 
+            ₹{{ "%.2f"|format(400 / (5 - available_seats)) }}
+            <span class="text-sm text-gray-500">
+                (split between {{ 5 - available_seats }} riders)
+            </span>
+        </p>
+    </div>
+
+    {% if not active_ride and available_seats > 0 %}
+    <form action="{{ url_for('rider.request_ride', driver_id=driver.id) }}" method="POST" class="mt-4">
+        <button type="submit" 
+                class="w-full bg-blue-500 text-white rounded px-4 py-2 hover:bg-blue-600 transition duration-200">
+            Request Ride
+        </button>
+    </form>
+    {% endif %}
+</div>
+{% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-8 text-gray-600">
+            No drivers currently available in this zone.
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if completed_rides %}
+<div class="mt-8 bg-white shadow rounded-lg overflow-hidden">
+    <h2 class="text-xl font-semibold p-6 bg-gray-50 border-b border-gray-200">Recent Completed Rides</h2>
+    <div class="divide-y divide-gray-200">
+        {% for ride in completed_rides %}
+        <div class="p-6 hover:bg-gray-50 transition-colors duration-150">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-user text-blue-500"></i>
+                        </div>
+                        <div class="text-gray-800 font-medium">
+                            {{ ride.driver.first_name }} {{ ride.driver.last_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-car text-green-500"></i>
+                        </div>
+                        <div class="text-gray-700">
+                            {{ ride.driver.vehicle_number }}
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                            <i class="fas fa-phone text-purple-500"></i>
+                        </div>
+                        <div class="text-gray-700">
+                            {{ ride.driver.phone_number }}
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-yellow-500"></i>
+                        </div>
+                        <div class="text-gray-700">
+                            {{ ride.pickup_zone.name }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col justify-between items-end">
+                    <div class="text-sm text-gray-500">
+                        Completed on: {{ ride.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
+                    
+                    {% if not ride.feedback %}
+                    <div class="mt-4 w-full">
+                        <form action="{{ url_for('rider.submit_feedback', ride_id=ride.id) }}" method="POST" class="space-y-4">
+                            <textarea name="comment" 
+                                      class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="Share your experience with this ride..."
+                                      rows="3"
+                                      required></textarea>
+                            <button type="submit" 
+                                    class="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-150">
+                                Submit Feedback
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="mt-4 w-full">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="flex items-start space-x-2">
+                                <i class="fas fa-comment-alt text-blue-500 mt-1"></i>
+                                <p class="text-gray-700">{{ ride.feedback.comment }}</p>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2 text-right">
+                                Feedback submitted on {{ ride.feedback.created_at.strftime('%Y-%m-%d %H:%M') }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Connect to Socket.IO
+    const socket = io();
+    
+    // Join user-specific room
+    socket.emit('join', { room: `user_{{ current_user.id }}` });
+    
+    // Handle ride status updates
+    socket.on('ride_status_update', function(data) {
+        updateRideStatus(data);
+    });
+    
+    function updateRideStatus(data) {
+        const notification = document.getElementById('rideStatusNotification');
+        const statusText = document.getElementById('rideStatusText');
+        const driverInfo = document.getElementById('driverInfo');
+        const driverName = document.getElementById('driverName');
+        const driverContact = document.getElementById('driverContactText');
+        const driverVehicle = document.getElementById('driverVehicle');
+        
+        if (data.status === 'accepted') {
+            statusText.textContent = 'Your ride has been accepted!';
+            driverName.textContent = `Driver: ${data.driver.name}`;
+            driverContact.textContent = `Contact: ${data.driver.contact}`; // Added contact display
+            driverVehicle.textContent = `Vehicle: ${data.driver.vehicle}`;
+            driverInfo.classList.remove('hidden');
+        } else if (data.status === 'pending') {
+            statusText.textContent = 'Looking for a driver...';
+            driverInfo.classList.add('hidden');
+        }
+        
+        notification.classList.remove('hidden');
+    }
+    
+    // Check initial ride status
+    fetch('/rider/check_ride_status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.status) {
+                updateRideStatus(data);
+            }
+        })
+        .catch(error => console.error('Error checking ride status:', error));
+
+        function checkRideStatus() {
+    fetch('/rider/check_ride_status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.status) {
+                // Reload the page to show updated status
+                window.location.reload();
+            }
+        })
+        .catch(error => console.error('Error checking ride status:', error));
+}
+
+function trackRide() {
+    // Add ride tracking functionality here
+    alert('Ride tracking feature coming soon!');
+}
+        
+    // Rest of your existing dashboard JavaScript...
+});
+
+</script>
+{% endblock %}

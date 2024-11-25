@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* Global Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container Styling */
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+}
+
+/* Header */
+h1 {
+    font-size: 2rem; /* 32px */
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Quick Actions Section */
+.bg-white {
+    background-color: #ffffff;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.text-xl {
+    font-size: 1.25rem; /* 20px */
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.md\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.transition-colors {
+    transition: background-color 0.3s;
+}
+
+/* Quick Action Cards */
+.inline-flex {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.hover\:bg-blue-100:hover {
+    background-color: #ebf8ff;
+}
+
+.hover\:bg-green-100:hover {
+    background-color: #f0fff4;
+}
+
+.hover\:bg-purple-100:hover {
+    background-color: #faf5ff;
+}
+
+.hover\:bg-yellow-100:hover {
+    background-color: #fefcbf;
+}
+
+.hover\:bg-indigo-100:hover {
+    background-color: #e0e7ff;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-lg {
+    font-size: 1.125rem; /* 18px */
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+/* Icon Colors */
+.text-blue-600 {
+    color: #3182ce;
+}
+
+.text-green-600 {
+    color: #38a169;
+}
+
+.text-purple-600 {
+    color: #805ad5;
+}
+
+.text-yellow-600 {
+    color: #d69e2e;
+}
+
+.text-indigo-600 {
+    color: #5a67d8;
+}
+
+/* Link Styles */
+a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    text-align: center;
+}
+
+/* Ride History Report Link */
+.inline-flex {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-indigo-50 {
+    background-color: #edf2ff;
+}
+
+.hover\:bg-indigo-100:hover {
+    background-color: #ebf4ff;
+}
+
+</style>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Manager Dashboard</h1>
+    
+    
+ 
+<!-- Quick Actions -->
+<div class="bg-white rounded-lg shadow mb-8">
+    <div class="p-6">
+        <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="{{ url_for('manager.add_driver') }}"
+               class="inline-flex items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                <div class="text-center">
+                    <div class="text-blue-600 text-lg mb-1">➕</div>
+                    <div class="text-sm font-medium text-gray-900">Add Driver</div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('manager.drivers') }}"
+               class="inline-flex items-center justify-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                <div class="text-center">
+                    <div class="text-green-600 text-lg mb-1">👥</div>
+                    <div class="text-sm font-medium text-gray-900">View Drivers</div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('manager.rider_address') }}"
+               class="inline-flex items-center justify-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                <div class="text-center">
+                    <div class="text-purple-600 text-lg mb-1">📍</div>
+                    <div class="text-sm font-medium text-gray-900">Rider Addresses</div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('manager.add_rider_address') }}"
+               class="inline-flex items-center justify-center p-4 bg-yellow-50 rounded-lg hover:bg-yellow-100 transition-colors">
+                <div class="text-center">
+                    <div class="text-yellow-600 text-lg mb-1">➕</div>
+                    <div class="text-sm font-medium text-gray-900">Add Address</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<a href="{{ url_for('manager.ride_history_report') }}" 
+   class="inline-flex items-center justify-center p-4 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+   <div class="text-center">
+      <div class="text-indigo-600 text-lg mb-1">📊</div>
+      <div class="text-sm font-medium text-gray-900">Ride History</div>
+   </div>
+</a>
+
+
+
+
+
+{% endblock %}

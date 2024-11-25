@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+{% block content %}
+<style>.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.grid {
+    display: grid;
+    gap: 20px;
+}
+
+.bg-white {
+    background-color: #fff;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.p-6 {
+    padding: 24px;
+}
+
+.border-b {
+    border-bottom: 1px solid #ddd;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-gray-600 {
+    color: #666;
+}
+
+.text-sm {
+    font-size: 14px;
+}
+
+.text-xl {
+    font-size: 20px;
+}
+
+.text-2xl {
+    font-size: 24px;
+}
+
+.text-3xl {
+    font-size: 30px;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.bg-green-500 {
+    background-color: #28a745;
+}
+
+.bg-blue-500 {
+    background-color: #007bff;
+}
+
+.bg-red-600 {
+    background-color: #dc3545;
+}
+
+.hover\:bg-green-600:hover {
+    background-color: #218838;
+}
+
+.hover\:bg-blue-600:hover {
+    background-color: #0056b3;
+}
+
+.hover\:bg-red-700:hover {
+    background-color: #c82333;
+}
+
+.text-white {
+    color: #fff;
+}
+
+.bg-gray-50 {
+    background-color: #f8f9fa;
+}
+
+.text-gray-500 {
+    color: #6c757d;
+}
+
+.bg-green-100 {
+    background-color: #d4edda;
+}
+
+.bg-red-100 {
+    background-color: #f8d7da;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.px-4, .py-2 {
+    padding: 8px 16px;
+}
+
+.px-3 {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.py-1 {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.rounded {
+    border-radius: 4px;
+}
+
+.mb-4, .mb-8 {
+    margin-bottom: 16px;
+}
+
+.mt-8 {
+    margin-top: 32px;
+}
+
+.space-y-3 {
+    > * + * {
+        margin-top: 12px;
+    }
+}
+
+.italic {
+    font-style: italic;
+}</style>
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Driver Dashboard</h1>
+        <div class="text-right">
+            <p>Welcome, {{ driver.get_full_name() }}</p>
+            {% set availability = ride_utils.get_driver_availability(driver.id) %}
+            {% if availability[0] %}
+                <span class="inline-block px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                    Available ({{ availability[1] }}/4 riders)
+                </span>
+            {% else %}
+                <span class="inline-block px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                    Full (4/4 riders)
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Active Rides Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Active Rides</h2>
+            
+            {% if active_rides %}
+                {% for ride in active_rides %}
+                <div class="border-b last:border-0 py-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <p><span class="font-medium">Rider:</span> {{ ride.rider.username }}</p>
+                            <p><span class="font-medium">Status:</span> {{ ride.status|title }}</p>
+                            <p><span class="font-medium">Pickup:</span> {{ ride.pickup_address }}</p>
+                            <p><span class="font-medium">Current Fare:</span> ₹{{ ride.get_formatted_fare() }}</p>
+                            <p><span class="font-medium">Total Riders:</span> 
+                                {{ ride_utils.get_total_riders(ride.ride_group_id) }}/4
+                            </p>
+                            {% if ride.status == 'accepted' %}
+                <span class="text-sm text-gray-500">
+                    (Fare split: ₹400/{{ ride_utils.get_total_riders(ride.ride_group_id) }} riders)
+                </span>
+                {% endif %}
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            {% if ride.status == 'requested' %}
+                            <form action="{{ url_for('driver.accept_ride', ride_id=ride.id) }}" method="post">
+                                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+                                    Accept Ride
+                                </button>
+                                
+                            </form>
+                            <form action="{{ url_for('driver.reject_ride', ride_id=ride.id) }}" method="POST" id="reject-form-{{ ride.id }}">
+                                <button type="submit" class="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                    Reject Ride
+                                </button>
+                            </form>
+
+
+                            {% elif ride.status == 'accepted' %}
+                            <form action="{{ url_for('driver.complete_ride', ride_id=ride.id) }}" method="post">
+                                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                                    Complete Ride
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            
+            <div class="text-center py-8 text-gray-600">
+                No active rides at the moment.
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Recent History Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4" id="recent-completed-rides">Recent Completed Rides</h2>
+            {% if completed_rides %}
+                {% for ride in completed_rides %}
+                    <div class="border-b last:border-0 py-4 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p>Rider: {{ ride.rider.username }}</p>
+                                <p>Pickup: {{ ride.pickup_zone.name }}</p>
+                                <p>Completed: {{ ride.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                            </div>
+                        </div>
+                        {% if ride.feedback %}
+                            <div class="mt-4 bg-gray-50 p-4 rounded-lg">
+                                <div class="flex flex-col gap-2">
+                                    <div class="text-sm text-gray-700">
+                                        <span class="font-medium">Rider Feedback:</span>
+                                        <p class="mt-1">{{ ride.feedback.comment }}</p>
+                                    </div>
+                                    <div class="text-xs text-gray-500 text-right">
+                                        Feedback received on {{ ride.feedback.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="mt-2 text-sm text-gray-500 italic">
+                                No feedback received yet
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-8 text-gray-600">
+                    No completed rides yet.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+</div>
+
+    <!-- Driver Stats Section -->
+    <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-bold mb-4">Your Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <p class="text-gray-600">Driver ID</p>
+                <p class="text-xl font-medium">{{ driver.driver_id }}</p>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-lg">
+                <p class="text-gray-600">Vehicle</p>
+                <p class="text-xl font-medium">{{ driver.vehicle_number }}</p>
+            </div>
+            <div class="rating-section">
+                <div class="rating-header">
+                    <div>
+                        <h2 style="margin: 0 0 0.5rem 0;">Overall Rating</h2>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="font-size: 1.5rem; font-weight: bold;">
+                                {{ "%.1f"|format(rating_stats.average) }}
+                            </div>
+                            <div>
+                                {% for i in range(5) %}
+                                    {% if i < rating_stats.average|int %}
+                                        <span class="star">★</span>
+                                    {% else %}
+                                        <span class="empty-star">★</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div style="color: #64748b; font-size: 0.875rem;">
+                                ({{ rating_stats.total_ratings }} ratings)
+                            </div>
+                        </div>
+                    </div>
+                    {% if rating_stats.recent_trend != 0 %}
+                        <div class="trend-indicator {% if rating_stats.recent_trend > 0 %}trend-up{% else %}trend-down{% endif %}">
+                            {% if rating_stats.recent_trend > 0 %}
+                                ↑ Trending up
+                            {% else %}
+                                ↓ Trending down
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+        
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle reject forms
+        const rejectForms = document.querySelectorAll('form[id^="reject-form-"]');
+        
+        rejectForms.forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (!confirm('Are you sure you want to reject this ride?')) {
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Reload the page to show updated status
+                        window.location.reload();
+                    } else {
+                        alert('Failed to reject ride. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    });
+    </script>
+
+{% endblock %}

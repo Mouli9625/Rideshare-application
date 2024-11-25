@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<style>/* Container Styling */
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f8fafc, #ffffff);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 6px 6px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* Form Styling */
+    form {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    form:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1), 0 8px 8px rgba(0, 0, 0, 0.06);
+    }
+    
+    /* Heading Styling */
+    h1 {
+        font-size: 2rem;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+    }
+    
+    /* Label Styling */
+    form label {
+        color: #4a5568;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+    
+    /* Select Field Styling */
+    form select {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid #cbd5e0;
+        background-color: #f9fafb;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        appearance: none;
+        background-image: url('data:image/svg+xml;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAAD9MdUeAAAACXBIWXMAAAsSAAALEgHS3X78AAAAXElEQVQoz2NgGAXUBhNwkKAwiIMRxA4wKIpsAKgoh6JkCA1hdCAgVGmACj0KlFBFJgaEQkhZNYkOkok5KoepA1DBU0+ZCj8g4jNAJhjMBrCcgBya7TwpMDwAADfFBFXRpdF4AAAAASUVORK5CYII=');
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1rem;
+    }
+    
+    form select:focus {
+        border-color: #3182ce;
+        box-shadow: 0 0 0 4px rgba(66, 153, 225, 0.25);
+        outline: none;
+        background-color: #ffffff;
+    }
+    
+    /* Button Styling */
+    button[type="submit"] {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(135deg, #4299e1, #2b6cb0);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    button[type="submit"]:hover {
+        background: linear-gradient(135deg, #2b6cb0, #3182ce);
+        transform: translateY(-2px);
+    }
+    
+    button[type="submit"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    }
+    </style>
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Ride History Report</h1>
+    
+    <form action="{{ url_for('manager.ride_history_report') }}" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="year">
+                Select Year
+            </label>
+            <select name="year" id="year" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="month">
+                Select Month
+            </label>
+            <select name="month" id="month" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                {% for month in range(1, 13) %}
+                <option value="{{ month }}">{{ ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month-1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                Generate Report
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

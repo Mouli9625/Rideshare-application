@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}{{ role|capitalize }} Login - RideShare{% endblock %}
+
+{% block content %}
+<style>/* Reset Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+    
+    /* Auth Container Styles */
+    .auth-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    
+    .auth-container h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+    
+    .auth-form .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+    
+    .auth-form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #666;
+    }
+    
+    .auth-form input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: border-color 0.3s;
+    }
+    
+    .auth-form input:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    
+    .auth-form button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+    
+    .auth-form button:hover {
+        background-color: #0056b3;
+    }
+    
+    .auth-container p {
+        margin-top: 10px;
+        color: #555;
+    }
+    
+    .auth-container a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .ai{
+        color: #dae0e6;
+        text-decoration: none;
+        font-weight: bold;
+
+    }
+    </style>
+   
+
+<div class="auth-container">
+    
+    <h2>{{ role|capitalize }} Login</h2>
+    <form method="POST" class="auth-form">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit">Login</button>
+        <a href="{{ url_for('auth.ai_assistance') }}" class="ai">
+            AI Assistance
+        </a>
+    </form>
+    <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Register</a></p>
+    <p><a href="{{ url_for('auth.role_selection') }}">Back to Role Selection</a></p>
+   
+</div>
+{% endblock %}
